@@ -1,11 +1,13 @@
 const express = require('express');
+
+/* eslint-disable import/no-extraneous-dependencies */
 const mongoose = require('mongoose');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://0.0.0.0/mestodb', {
+mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
