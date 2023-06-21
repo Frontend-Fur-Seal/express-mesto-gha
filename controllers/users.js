@@ -46,7 +46,13 @@ const upgradeUser = (req, res) => {
     .then((user) => {
       res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные пользователя' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const upgradeUserAvatar = (req, res) => {

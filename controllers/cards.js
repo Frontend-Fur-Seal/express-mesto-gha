@@ -13,23 +13,26 @@ const createCard = (req, res) => {
   Card.create(newCardData)
     .then((newCard) => newCard.populate('owner'))
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные карточки' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      if (card) {
-        res.status(200).send(card);
-      } else {
-        res.status(400).send({ message: 'Некорректные данные карточки' });
-      }
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res.status(404)
-          .send({ message: 'Такой карточки нет в базе' });
+        res.status(404).send({ message: 'Такой карточки нет в базе' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Некорректные данные карточки' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
@@ -45,7 +48,13 @@ const putLike = (req, res) => {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Некорректные данные карточки' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 const deleteLike = (req, res) => {
@@ -57,7 +66,13 @@ const deleteLike = (req, res) => {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Некорректные данные карточки' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 module.exports = {
