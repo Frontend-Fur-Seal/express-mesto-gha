@@ -5,7 +5,7 @@ const path = require('path');
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect('mongodb://0.0.0.0/mestodb', {
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 }).then(() => {
   console.log('connected to db');
@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
