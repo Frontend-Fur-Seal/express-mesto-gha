@@ -42,7 +42,7 @@ const createUser = (req, res) => {
 
 const upgradeUser = (req, res) => {
   const { name, about } = req.body;
-  return User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((user) => {
       res.send({ data: user });
     })
@@ -50,14 +50,14 @@ const upgradeUser = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректные данные пользователя' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(500).send({ message: err.name });
       }
     });
 };
 
 const upgradeUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  return User.findByIdAndUpdate(req.user._id, { avatar })
+  return User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => {
       res.send({ data: user });
     })
