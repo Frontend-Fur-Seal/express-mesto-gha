@@ -33,8 +33,28 @@ const createUser = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
+const upgradeUser = (req, res) => {
+  const { name, about } = req.body;
+  return User.findByIdAndUpdate(req.user._id, { name, about })
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+const upgradeUserAvatar = (req, res) => {
+  const { avatar } = req.body;
+  return User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
 module.exports = {
   getUsers,
   createUser,
   getUserId,
+  upgradeUser,
+  upgradeUserAvatar,
 };
