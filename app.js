@@ -5,13 +5,12 @@ const path = require('path');
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
-  useNewUrlParser: true,
-}).then(() => {
-  console.log('connected to db');
-}).catch((err) => {
-  console.log(err.message);
-});
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
+  .then(() => {
+    console.log('connected to db');
+  }).catch((err) => {
+    console.log(err.message);
+  });
 
 const app = express();
 
