@@ -20,7 +20,11 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      res.status(200).send(card);
+      if (card) {
+        res.status(200).send(card);
+      } else {
+        res.status(400).send({ message: 'Некорректные данные карточки' });
+      }
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {

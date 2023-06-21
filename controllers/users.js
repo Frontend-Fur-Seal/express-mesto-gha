@@ -12,7 +12,11 @@ const getUserId = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new Error('NotValidId'))
     .then((user) => {
-      res.status(200).send(user);
+      if (user) {
+        res.status(200).send(user);
+      } else {
+        res.status(400).send({ message: 'Некорректные данные пользователя' });
+      }
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
