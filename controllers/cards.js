@@ -17,15 +17,15 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findById(req.params.userId)
+  Card.findByIdAndRemove(req.params.cardId)
     .orFail(new Error('NotValidId'))
-    .then((user) => {
-      res.status(200).send(user);
+    .then((card) => {
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
         res.status(404)
-          .send({ message: 'Такого пользователя нет в базе' });
+          .send({ message: 'Такой карточки нет в базе' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
@@ -33,19 +33,25 @@ const deleteCard = (req, res) => {
 };
 
 const putLike = (req, res) => {
-  const { name, about } = req.body;
-  return Card.findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => {
-      res.send({ data: user });
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((card) => {
+      res.send({ data: card });
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const deleteLike = (req, res) => {
-  const { avatar } = req.body;
-  return Card.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => {
-      res.send({ data: user });
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((card) => {
+      res.send({ data: card });
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
