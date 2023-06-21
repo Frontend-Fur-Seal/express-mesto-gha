@@ -32,7 +32,7 @@ const createUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректные данные пользователя' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
