@@ -45,11 +45,14 @@ const putLike = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((card) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'NotValidId') {
+        res.status(404).send({ message: 'Такой карточки нет в базе' });
+      } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Некорректные данные карточки' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -63,11 +66,14 @@ const deleteLike = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(new Error('NotValidId'))
     .then((card) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.message === 'NotValidId') {
+        res.status(404).send({ message: 'Такой карточки нет в базе' });
+      } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Некорректные данные карточки' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
