@@ -17,6 +17,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64922f6cbe46994ad87bf35d',
+  };
+
+  next();
+});
+
 app.use('/users', require('./routes/users'));
 
 app.listen(PORT, () => {

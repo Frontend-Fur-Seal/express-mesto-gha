@@ -8,6 +8,22 @@ const getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
+const getUserId = (req, res) => {
+  User.findById(req.params.userId)
+    .orFail(new Error('NotValidId'))
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res.status(404)
+          .send({ message: 'Такого пользователя нет в базе' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
+};
+
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   return User.create({ name, about, avatar })
@@ -20,4 +36,5 @@ const createUser = (req, res) => {
 module.exports = {
   getUsers,
   createUser,
+  getUserId,
 };
