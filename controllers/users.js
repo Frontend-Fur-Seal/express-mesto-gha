@@ -61,7 +61,11 @@ const upgradeUser = (req, res) => {
 
 const upgradeUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, avatar, { runValidators: true, new: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true },
+  )
     .then((user) => {
       res.send({ data: user });
     })
