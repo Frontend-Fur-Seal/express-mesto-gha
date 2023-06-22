@@ -57,11 +57,17 @@ const upgradeUser = (req, res) => {
 
 const upgradeUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  return User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => {
       res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные пользователя' });
+      } else {
+        res.status(500).send({ message: err.name });
+      }
+    });
 };
 
 module.exports = {
