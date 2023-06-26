@@ -1,3 +1,4 @@
+// const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('./constants');
@@ -26,21 +27,42 @@ const getUserId = (req, res) => {
       }
     });
 };
+/*
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+};
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  return User.create({ name, about, avatar })
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => User.create({
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => {
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
+        res.status(BAD_REQUEST).send({ message: ` ${err.name} 'Некорректные данные пользователя'` });
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
+
+*/
 
 const upgradeUser = (req, res) => {
   const { name, about } = req.body;
@@ -82,8 +104,9 @@ const upgradeUserAvatar = (req, res) => {
 
 module.exports = {
   getUsers,
-  createUser,
+  // createUser,
   getUserId,
   upgradeUser,
   upgradeUserAvatar,
+  // login,
 };
