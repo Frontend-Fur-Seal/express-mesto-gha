@@ -50,7 +50,8 @@ app.post('/signup', (req, res) => {
     }))
     .then((user) => {
       res.status(201).send({
-        data: user
+        name: user.name,
+        email: user.email,
       });
     })
     .catch((err) => {
