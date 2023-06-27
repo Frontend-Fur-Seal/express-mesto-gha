@@ -1,5 +1,7 @@
-// const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+
+const jwt = require('jsonwebtoken');
 
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('./constants');
 
@@ -27,13 +29,18 @@ const getUserId = (req, res) => {
       }
     });
 };
-/*
+
 const login = (req, res) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
-    .then((user) => {
-      res.send(user);
-    })
+  .then((user) => {
+    const token = jwt.sign(
+     { _id: user._id },
+     'super-strong-secret',
+     { expiresIn: '7d' });
+
+   res.send({ token });
+   })
     .catch((err) => {
       res
         .status(401)
@@ -51,7 +58,10 @@ const createUser = (req, res) => {
       password: hash,
     }))
     .then((user) => {
-      res.send({ data: user });
+      res.send({
+        name: user.name,
+        email: user.email,
+       });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -61,8 +71,6 @@ const createUser = (req, res) => {
       }
     });
 };
-
-*/
 
 const upgradeUser = (req, res) => {
   const { name, about } = req.body;
@@ -104,9 +112,9 @@ const upgradeUserAvatar = (req, res) => {
 
 module.exports = {
   getUsers,
-  // createUser,
+  createUser,
   getUserId,
   upgradeUser,
   upgradeUserAvatar,
-  // login,
+  login,
 };
