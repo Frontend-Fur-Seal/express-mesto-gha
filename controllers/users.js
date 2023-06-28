@@ -38,7 +38,11 @@ const login = (req, res) => {
      { _id: user._id },
      'super-strong-secret',
      { expiresIn: '7d' });
-
+    res.cookie('jwt', token, {
+       maxAge: 3600000 * 24 * 7,
+       httpOnly: true,
+       sameSite: true,
+     })
    res.send({ token });
    })
     .catch((err) => {
@@ -65,8 +69,12 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: ` ${err.name} 'Некорректные данные пользователя'` });
-      } else {
+        res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
+      }
+      if (err.code === 11000) {
+        res.status(409).send({ message: 'Уже есть в базе, дружок' }); //поменять
+    }
+      else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });

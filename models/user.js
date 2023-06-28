@@ -38,17 +38,16 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return false;
+        return Promise.reject(new Error('Неверные почта или пароль'))
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return false
+            return Promise.reject(new Error('Неверные почта или пароль'))
           }
-
           return user;
         });
-    });
+    })
 };
 
 module.exports = mongoose.model('user', userSchema);
