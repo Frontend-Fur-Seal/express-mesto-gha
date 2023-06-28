@@ -60,11 +60,14 @@ const createUser = (req, res) => {
       avatar: req.body.avatar,
       email: req.body.email,
       password: hash,
-    }))
+      }, {runValidators: true}))
     .then((user) => {
       res.send({
         name: user.name,
+        about: user.about,
+        avatar: user.avatar,
         email: user.email,
+        password: hash,
        });
     })
     .catch((err) => {
