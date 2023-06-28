@@ -78,7 +78,7 @@ const createUser = (req, res) => {
         res.status(409).send({ message: 'Уже есть в базе, дружок' }); //поменять
     }
       else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
       }
     });
 };
