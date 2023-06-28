@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const { login, createUser } = require('./controllers/users');
 
+const ErrorHandler = require('./errors/ErrorHandler')
+
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
@@ -26,6 +28,8 @@ app.post('/signup', createUser);
 app.use((req, res) => {
   res.status(404).send({ message: 'Incorrect' });
 });
+
+app.use(ErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
