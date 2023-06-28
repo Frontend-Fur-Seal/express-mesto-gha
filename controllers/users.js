@@ -71,7 +71,7 @@ const createUser = (req, res) => {
        });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'Illegal arguments: undefined, number') {
+      if (err.name === 'ValidationError' || err.name === 'Error') {
         res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
