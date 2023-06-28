@@ -8,6 +8,8 @@ const { login, createUser } = require('./controllers/users');
 
 const ErrorHandler = require('./errors/ErrorHandler');
 
+const { validationSignin, validationSignup} = require('./middlewares/celebrateValidation')
+
 const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
@@ -23,9 +25,9 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post('/signin', login);
+app.post('/signin', validationSignin, login);
 
-app.post('/signup', createUser);
+app.post('/signup', validationSignup, createUser);
 
 app.use(errors());
 
