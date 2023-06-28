@@ -10,8 +10,6 @@ const ErrorHandler = require('./errors/ErrorHandler');
 
 const { errors } = require('celebrate');
 
-const {validationSignup, validationSignin} = require('./middlewares/ValidationCelebrate');
-
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
@@ -25,9 +23,9 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post('/signin', validationSignin, login);
+app.post('/signin', login);
 
-app.post('/signup', validationSignup, createUser);
+app.post('/signup', createUser);
 
 app.use(errors());
 
