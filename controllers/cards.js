@@ -30,7 +30,7 @@ const deleteCard = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((card) => {
       if(card.owner.toString() !== req.user._id){
-        res.status(409).send({ message: 'Нет прав' });
+        res.status(403).send({ message: 'Нет прав' });
         return
       }
       Card.findByIdAndRemove(cardId)

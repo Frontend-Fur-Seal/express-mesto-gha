@@ -32,7 +32,7 @@ const getUserId = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password, {runValidators: true})
   .then((user) => {
     const token = jwt.sign(
      { _id: user._id },
