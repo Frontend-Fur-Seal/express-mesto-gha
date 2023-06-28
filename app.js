@@ -6,7 +6,11 @@ const auth = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
 
-const ErrorHandler = require('./errors/ErrorHandler')
+const ErrorHandler = require('./errors/ErrorHandler');
+
+const { errors } = require('celebrate');
+
+const {validationSignup, validationSignin} = require('./middlewares/ValidationCelebrate');
 
 const { PORT = 3000 } = process.env;
 
@@ -21,8 +25,11 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validationSignin, login);
+
+app.post('/signup', validationSignup, createUser);
+
+app.use(errors());
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
