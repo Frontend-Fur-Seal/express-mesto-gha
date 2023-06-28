@@ -53,9 +53,6 @@ const login = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  if(!(req.body.email) || !(req.body.password)){
-    return res.status(BAD_REQUEST).send({ message: 'Пропущены обязательные поля' });
-  }
   bcrypt.hash(req.body.password, 10)
     .then(hash => User.create({
       name: req.body.name,
