@@ -53,6 +53,9 @@ const login = (req, res) => {
 };
 
 const createUser = (req, res) => {
+  if(!(req.body.email) || !(req.body.password)){
+    return res.status(BAD_REQUEST).send({ message: 'Пропущены обязательные поля' });
+  }
   bcrypt.hash(req.body.password, 10)
     .then(hash => User.create({
       name: req.body.name,
@@ -67,15 +70,15 @@ const createUser = (req, res) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-        password: hash,
+        password: user.password,
        });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'Error') {
+      if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
-        res.status(409).send({ message: 'Уже есть в базе, дружок' }); //поменять
+        res.status(409).send({ message: 'Пользователь с таким email уже существует' }); //поменять
     }
       else {
         res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
