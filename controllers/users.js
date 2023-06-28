@@ -71,14 +71,14 @@ const createUser = (req, res) => {
        });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'Illegal arguments: undefined, number') {
         res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
         res.status(409).send({ message: 'Уже есть в базе, дружок' }); //поменять
     }
       else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: err.message });
       }
     });
 };
