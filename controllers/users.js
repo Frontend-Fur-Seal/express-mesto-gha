@@ -60,7 +60,7 @@ const createUser = (req, res) => {
       avatar: req.body.avatar,
       email: req.body.email,
       password: hash,
-      }, {runValidators: true}))
+      }))
     .then((user) => {
       res.send({
         name: user.name,
