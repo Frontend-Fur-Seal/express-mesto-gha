@@ -2,25 +2,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('./constants');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ConflictingRequest = require('../errors/ConflictingRequest');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       res.send({ data: user });
     })
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch((err) => next(err));
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.send({ data: users });
     })
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch((err) => next(err));
 };
 
-const getUserId = (req, res) => {
+const getUserId = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new Error('NotValidId'))
     .then((user) => {
@@ -28,16 +31,15 @@ const getUserId = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res.status(NOT_FOUND).send({ message: 'Такого пользователя нет в базе' });
+        next(new NotFoundError('Такого пользователя нет в базе'));
       } else if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        next(new BadRequestError('Некорректные данные пользователя'));
       }
+      next(err);
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password, { runValidators: true })
     .then((user) => {
@@ -53,14 +55,12 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+    .catch(() => {
+      next(new UnauthorizedError('Неверная почта или пароль'));
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       name: req.body.name,
@@ -79,16 +79,16 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
+        next(new BadRequestError('Некорректные данные пользователя'));
       }
       if (err.code === 11000) {
-        return res.status(409).send({ message: 'Пользователь с таким email уже существует' });
+        next(new ConflictingRequest('Пользователь с таким email уже существует'));
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
+      next(err);
     });
 };
 
-const upgradeUser = (req, res) => {
+const upgradeUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -100,14 +100,14 @@ const upgradeUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
+        next(new BadRequestError('Некорректные данные пользователя'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
-const upgradeUserAvatar = (req, res) => {
+const upgradeUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -119,9 +119,9 @@ const upgradeUserAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: err.name });
+        next(new BadRequestError('Некорректные данные пользователя'));
       } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
