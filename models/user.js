@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const mongoose = require('mongoose');
 
-const URL_REGEX = require('../controllers/constants')
+const RegExp = require('../controllers/constants')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: function(value) {
-        return URL_REGEX.test(value);
+        return RegExp.test(value);
       }
   }},
   email: {
