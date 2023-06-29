@@ -26,10 +26,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post('/signin', validationSignin, login);
-
 app.post('/signup', validationSignup, createUser);
-
-app.use(errors());
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
@@ -37,6 +34,8 @@ app.use('/cards', auth, require('./routes/cards'));
 app.use((req, res) => {
   res.status(404).send({ message: 'Incorrect' });
 });
+
+app.use(errors());
 
 app.use(ErrorHandler);
 

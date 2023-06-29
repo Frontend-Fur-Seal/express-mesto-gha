@@ -75,7 +75,7 @@ const createUser = (req, res) => {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
-        return res.status(403).send({ message: 'Пользователь с таким email уже существует' }); //поменять
+        return res.status(409).send({ message: 'Пользователь с таким email уже существует' }); //поменять
     }
       else {
         return res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });

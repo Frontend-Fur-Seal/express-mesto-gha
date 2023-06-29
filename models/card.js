@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+
+const { RegExp } = require('../controllers/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -10,6 +13,11 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: function(value) {
+        return RegExp.test(value);
+      }
+  },
   },
   owner: {
     ref: 'user',
