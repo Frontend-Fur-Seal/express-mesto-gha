@@ -72,13 +72,13 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
+        return res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
-        res.status(409).send({ message: 'Пользователь с таким email уже существует' }); //поменять
+        return res.status(403).send({ message: 'Пользователь с таким email уже существует' }); //поменять
     }
       else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
+        return res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
       }
     });
 };

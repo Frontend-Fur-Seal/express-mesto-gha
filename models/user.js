@@ -1,8 +1,9 @@
-const isEmail = require('validator/lib/isEmail');
+const validator = require('validator');
 const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
 
 const mongoose = require('mongoose');
+
+const URL_REGEX = require('../controllers/constants')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,12 +21,18 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-  },
+    validate: {
+      validator: function(value) {
+        return URL_REGEX.test(value);
+      }
+  }},
   email: {
     type: String,
     require: true,
     unique: true,
-    validate: [{ validator: (value) => isEmail(value) }],
+    validate: function (value){
+      return validator.isEmail(value);
+    },
   },
   password: {
     type: String,
