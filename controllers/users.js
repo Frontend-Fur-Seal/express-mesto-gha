@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const ConflictingRequest = require('../errors/ConflictingRequest');
+const ConflictingRequestError = require('../errors/ConflictingRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const getUser = (req, res, next) => {
@@ -85,7 +85,7 @@ const createUser = (req, res, next) => {
         next(new BadRequestError('Некорректные данные пользователя'));
       }
       if (err.code === 11000) {
-        next(new ConflictingRequest('Пользователь с таким email уже существует'));
+        next(new ConflictingRequestError('Пользователь с таким email уже существует'));
       }
       next(err);
     });
