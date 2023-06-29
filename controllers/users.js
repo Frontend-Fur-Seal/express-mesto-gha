@@ -5,6 +5,7 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictingRequest = require('../errors/ConflictingRequest');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -54,7 +55,12 @@ const login = (req, res, next) => {
       });
       res.send({ token });
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.message === 'Неверные почта или пароль') {
+        next(new UnauthorizedError('Неверные почта или пароль'));
+      }
+      next(err);
+    });
 };
 
 const createUser = (req, res, next) => {

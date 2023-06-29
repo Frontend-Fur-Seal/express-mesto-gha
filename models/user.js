@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs');
 
 const mongoose = require('mongoose');
 
-// const { RegExp } = require('../controllers/constants');
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
