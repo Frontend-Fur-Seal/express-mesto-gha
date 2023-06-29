@@ -4,7 +4,7 @@ const {
   getCards, createCard, deleteCard, putLike, deleteLike,
 } = require('../controllers/cards');
 
-const { validationCreateCard, validateCardId } = require('../middlewares/celebrateValidation')
+const { validationCreateCard, validateCardId } = require('../middlewares/celebrateValidation');
 
 router.get('/', getCards);
 router.post('/', validationCreateCard, createCard);

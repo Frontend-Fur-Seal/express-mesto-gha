@@ -25,18 +25,18 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  const {cardId} = req.params
+  const { cardId } = req.params;
   Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
-      if(card.owner.toString() !== req.user._id){
+      if (card.owner.toString() !== req.user._id) {
         res.status(403).send({ message: 'Нет прав' });
-        return
+        return;
       }
       Card.findByIdAndRemove(cardId)
-      .then((card) => {
-        res.send(card);
-      })
+        .then((delCard) => {
+          res.send(delCard);
+        });
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {

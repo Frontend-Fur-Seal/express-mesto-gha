@@ -2,15 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
 
 const ErrorHandler = require('./errors/ErrorHandler');
 
-const { validationSignin, validationSignup} = require('./middlewares/celebrateValidation')
-
-const { errors } = require('celebrate');
+const { validationSignin, validationSignup } = require('./middlewares/celebrateValidation');
 
 const { PORT = 3000 } = process.env;
 

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 const { RegExp } = require('../controllers/constants');
 
@@ -14,10 +13,10 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: function(value) {
+      function(value) {
         return RegExp.test(value);
-      }
-  },
+      },
+    },
   },
   owner: {
     ref: 'user',

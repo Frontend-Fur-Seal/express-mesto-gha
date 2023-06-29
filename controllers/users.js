@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
-
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('./constants');
 
@@ -40,19 +39,20 @@ const getUserId = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password, {runValidators: true})
-  .then((user) => {
-    const token = jwt.sign(
-     { _id: user._id },
-     'super-strong-secret',
-     { expiresIn: '7d' });
-    res.cookie('jwt', token, {
-       maxAge: 3600000 * 24 * 7,
-       httpOnly: true,
-       sameSite: true,
-     })
-   res.send({ token });
-   })
+  User.findUserByCredentials(email, password, { runValidators: true })
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        'super-strong-secret',
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      });
+      res.send({ token });
+    })
     .catch((err) => {
       res
         .status(401)
@@ -62,31 +62,29 @@ const login = (req, res) => {
 
 const createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10)
-    .then(hash => User.create({
+    .then((hash) => User.create({
       name: req.body.name,
       about: req.body.about,
       avatar: req.body.avatar,
       email: req.body.email,
       password: hash,
-      }))
+    }))
     .then((user) => {
       res.send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-       });
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные пользователя' });
       }
       if (err.code === 11000) {
-        return res.status(409).send({ message: 'Пользователь с таким email уже существует' }); //поменять
-    }
-      else {
-        return res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
+        return res.status(409).send({ message: 'Пользователь с таким email уже существует' });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: err.name });
     });
 };
 
