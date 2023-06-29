@@ -19,15 +19,44 @@ const validationSignup = celebrate({
   })
 })
 
+const validationUpgradeAvatar = celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().pattern(RegExp),
+  })
+})
+
+const validationUserId = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  })
+})
+
+const validationUpgradeUser = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  })
+})
+
 const validationCreateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().pattern(RegExp),
+    link: Joi.string().required().pattern(RegExp),
   }).unknown(true),
+})
+
+const validateCardId = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  })
 })
 
 module.exports = {
   validationSignin,
   validationSignup,
   validationCreateCard,
+  validationUserId,
+  validationUpgradeUser,
+  validationUpgradeAvatar,
+  validateCardId,
 }

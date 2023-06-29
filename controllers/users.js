@@ -5,6 +5,14 @@ const jwt = require('jsonwebtoken');
 
 const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('./constants');
 
+const getUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+};
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
@@ -122,6 +130,7 @@ const upgradeUserAvatar = (req, res) => {
 };
 
 module.exports = {
+  getUser,
   getUsers,
   createUser,
   getUserId,
