@@ -35,7 +35,7 @@ app.post('/signup', validationSignup, createUser);
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.use('*', auth, (req, res, next) => {
+app.use('/*', auth, (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
 
