@@ -27,7 +27,7 @@ const validationUpgradeAvatar = celebrate({
 
 const validationUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
+    userId: Joi.string().length(24).hex().required(),
   }),
 });
 
@@ -42,12 +42,12 @@ const validationCreateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().pattern(RegExp),
-  }).unknown(true),
+  }),
 });
 
 const validateCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 });
 

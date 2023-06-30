@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+const cookieParser = require('cookie-parser');
+
 const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 
@@ -23,6 +26,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
 
 const app = express();
 
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.post('/signin', validationSignin, login);
@@ -36,7 +40,6 @@ app.use((req, res, next) => {
 });
 
 app.use(errors());
-
 app.use(ErrorHandler);
 
 app.listen(PORT, () => {

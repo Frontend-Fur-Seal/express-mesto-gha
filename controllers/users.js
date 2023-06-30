@@ -12,7 +12,7 @@ const getUser = (req, res, next) => {
     .then((user) => {
       res.send({ data: user });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const getUsers = (req, res, next) => {
@@ -20,22 +20,21 @@ const getUsers = (req, res, next) => {
     .then((users) => {
       res.send({ data: users });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const getUserId = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(new Error('NotValidId'))
+    .orFail(() => next(new NotFoundError('Такого пользователя нет в базе')))
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.message === 'NotValidId') {
-        next(new NotFoundError('Такого пользователя нет в базе'));
-      } else if (err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new BadRequestError('Некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -58,8 +57,9 @@ const login = (req, res, next) => {
     .catch((err) => {
       if (err.message === 'Неверные почта или пароль') {
         next(new UnauthorizedError('Неверные почта или пароль'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -83,11 +83,11 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные пользователя'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new ConflictingRequestError('Пользователь с таким email уже существует'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
