@@ -63,6 +63,14 @@ const login = (req, res, next) => {
     });
 };
 
+const logout = (req, res, next) => {
+  try {
+    res.clearCookie('jwt').send({ message: 'Вы успешно вышли из системы' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
@@ -137,4 +145,5 @@ module.exports = {
   upgradeUser,
   upgradeUserAvatar,
   login,
+  logout,
 };

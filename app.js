@@ -8,7 +8,9 @@ const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 
-const { login, createUser } = require('./controllers/users');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+const { login, createUser, logout } = require('./controllers/users');
 
 const NotFoundError = require('./errors/NotFoundError');
 const ErrorHandler = require('./errors/ErrorHandler');
@@ -29,15 +31,21 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+app.use(requestLogger);
+
 app.post('/signin', validationSignin, login);
 app.post('/signup', validationSignup, createUser);
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
+app.get('/signout', auth, logout);
+
 app.use('/*', auth, (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 app.use(ErrorHandler);
