@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VladimirSherstnev/express-mesto-gha.git"
+    "url": "git+https://github.com/Frontend-Fur-Seal/express-mesto-gha.git"
   },
   "keywords": [],
-  "author": "Vladimir Sherstnev",
+  "author": "Olga Gvozdeva",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/VladimirSherstnev/express-mesto-gha/issues"
+    "url": "https://github.com/Frontend-Fur-Seal/express-mesto-gha/issues"
   },
-  "homepage": "https://github.com/VladimirSherstnev/express-mesto-gha#readme",
+  "homepage": "https://github.com/Frontend-Fur-Seal/express-mesto-gha#readme",
   "devDependencies": {
     "cross-env": "^7.0.3",
     "nodemon": "^1.14.9"
